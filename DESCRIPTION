@@ -1,0 +1,20 @@
+Package: uniffstat
+Version: 0.1
+Date: 2021-07-15
+Title: Implementation for using Gene[Rate] output to compute Hierarchical F-Statistics based on hierfstat
+Authors@R: c(person("William","Lemieux",role=c("aut","cre"),email="william.lemieux@hema-quebec.qc.ca"),
+            c(person("Antoine", "Lewin", role=c("ctb"))))
+Author: William lemieux [aut, cre],
+        Antoine Lewin [ctb]
+Maintainer: William Lemieux <william.lemieux@hema-quebec.qc.ca>
+Imports: stats
+Description: Estimates hierarchical F-statistics from HLA allele 
+    frequencies as returned by the Gene[Rate]tools (Nunes et al. (2014) <https://hla-net.eu/>)
+    data with any numbers of levels in the hierarchy, following the
+    a variation of the genet.dist method of hierfstat (Goudet (2005) <https://github.com/jgx65/hierfstat>).
+Depends: R (>= 2.10)
+License: GPL (>= 2)
+URL: https://www.r-project.org, https://github.com/WLemieux03/uniffstat
+RoxygenNote: 7.1.1
+NeedsCompilation: no
+Date/Publication: 2021-07-16 18:20:11 UTC
