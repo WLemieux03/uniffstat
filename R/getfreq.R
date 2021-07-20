@@ -26,7 +26,7 @@ get.freq <- function(path='.', loci=NULL, exclude = 'ALL', ...){
       temp <- readLines(file(file.path(path, pop, filename), open='r'))
       alleles <- c()
       freq <- c()
-      for (t in temp[8:length(r)-1]){
+      for (t in temp[8:length(temp)-1]){
         all_freq <- unlist(strsplit(t, '\t'))
         alleles <- c(alleles, all_freq[1])
         freq <- c(freq, as.numeric(all_freq[2]))
