@@ -18,7 +18,6 @@ genet.dist<-function(path='.',diploid=TRUE,method="Dch", loci=NULL, exclude='ALL
   nl<-length(pft)
   npop<-dim(pft[[1]])[2]
   dist.loc<-array(numeric(npop^2*nl),c(npop,npop,nl))
-  print(pft)
   if (method==1)    temp<-lapply(pft,function(x) 2*(1-t(x)^0.5%*%x^0.5))
   if (method==2) temp<-lapply(pft,function(x) t(x)^0.5%*%x^0.5)
   if (method %in% c(3,4,5)) temp<-lapply(pft,function(x) t(x)%*%x)

@@ -2,3 +2,4 @@
 
 export(genet.dist)
 export(get.freq)
+export(loci.dist)
