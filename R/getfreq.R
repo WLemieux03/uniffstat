@@ -23,7 +23,9 @@ get.freq <- function(path='.', loci=NULL, exclude = 'ALL', ...){
     locusDF <- data.frame()
     for (pop in pops){
       filename <- paste(name, pop, paste0(locus, '.freq'),sep='_')
-      temp <- readLines(file(file.path(path, pop, filename), open='r'))
+      f <- file(file.path(path, pop, filename), open='r')
+      temp <- readLines(f)
+      close(f)
       alleles <- c()
       freq <- c()
       for (t in temp[8:length(temp)-1]){
@@ -43,5 +45,6 @@ get.freq <- function(path='.', loci=NULL, exclude = 'ALL', ...){
     locusDF[is.na(locusDF)]=0
     popFreq[[locus]] <- as.matrix(locusDF[,-1])
   }
+  closeAllConnections()
   return(popFreq)
 }
