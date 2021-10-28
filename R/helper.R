@@ -1,0 +1,89 @@
+further <- function(x, type=c('median', 'quartile')){
+  type <- match.arg(type)
+  iqr <- IQR(x)
+  med <- median(x)
+  q <- quantile(x, c(.25, .75))
+  if (type=='median'){
+    return((x < (med-1.5*iqr)) | (x > (med+1.5*iqr)))
+  } else if (type=='quartile'){
+    return((x < (q[1]-1.5*iqr)) | (x > (q[2]+1.5*iqr)))
+  }
+}
+
+compare.further <- function(tmp, exclude=NULL){
+  res <- list()
+  for (n in names(tmp)){
+    regions <- setdiff(colnames(tmp[[n]]), exclude)
+    res[[n]] <- t(apply(tmp[[n]][,regions],1,further))
+  }
+  return(res)
+}
+
+remove.rare <- function(dfl, threshold=0.01, disr=NULL){
+  for (n in names(dfl)){
+    mask <- setdiff(colnames(dfl[[n]]), disr)
+    dfl[[n]] <- dfl[[n]][apply(dfl[[n]][,mask], 1, function(x){any(x>=threshold)}),]
+  }
+  return(dfl)
+}
+
+which.diff <- function(dfl, x, exclude=NULL){
+  DF <- data.frame()
+  FF <- data.frame()
+  far <- get.outliers(dfl, exclude=exclude)
+  for (n in names(dfl)){
+    if(length(x)>1){
+      mask <- names(apply(far[[n]][,x], 1, any))
+    } else if(length(x)==1) {
+      mask <- names(far[[n]][,x])
+    } else {
+      mask <- rownames(far[[n]])
+    }
+    tmp <- dfl[[n]][mask,]
+    ftmp <- far[[n]][mask,]
+    if (dim(DF)[1]==0){
+      DF <- tmp
+      FF <- ftmp
+    } else {
+      DF <- rbind(DF, tmp)
+      FF <- rbind(FF, ftmp)
+    }
+  }
+  output <- list(freq=DF, status=FF)
+  return(output)
+}
+
+sampleList <- list(A=c("A*01:01","A*02:01","A*03:01","A*11:01","A*23:01","A*23:17","A*24:01","A*24:02","A*25:01","A*26:01","A*31:08","A*32:01","A*66:01","A*66:08","A*68:01","A*68:11N"),
+                   B=c("B*07:02","B*07:61","B*08:01","B*13:02","B*15:01","B*18:01","B*18:17N","B*27:05","B*27:13","B*35:01","B*35:03","B*35:42","B*38:01","B*40:01","B*44:02","B*44:03","B*44:19N","B*50:01","B*51:01","B*57:01"),
+                   DRB1=c("DRB1*01:01","DRB1*03:01","DRB1*04:01","DRB1*07:01","DRB1*08:11","DRB1*09:01","DRB1*11:01","DRB1*11:04","DRB1*12:01","DRB1*12:06","DRB1*12:10","DRB1*12:17","DRB1*13:01","DRB1*13:02","DRB1*13:03","DRB1*14:01","DRB1*14:54","DRB1*15:01","DRB1*16:02"))
+rfreq <- function(alleleList=sampleList, loci=names(alleleList), pops=c('01','02')){
+  popFreq <- list()
+  for (locus in loci){
+    locusDF <- data.frame()
+    for (pop in pops){
+      alleles <- sort(sample(alleleList[[locus]], sample(1:length(alleleList[[locus]]), 1)))
+      freq <- sapply(rnorm(length(alleles), 0.3,0.3), function(x){max(x,0)})
+      freq <- freq/sum(freq)
+      partDF <- data.frame(alleles,freq)
+      names(partDF) <- c('alleles', pop)
+      if('alleles' %in% names(locusDF)){
+        locusDF <- merge(locusDF, partDF, all=T)
+      } else {
+        locusDF <- partDF
+      }
+    }
+    row.names(locusDF) <- locusDF$alleles
+    locusDF[is.na(locusDF)]=0
+    popFreq[[locus]] <- as.matrix(locusDF[,-1])
+  }
+  return(popFreq)
+}
+
+
+clean.freq <- function(X){
+  for (locus in names(X)){
+    t <- apply(X[[locus]],1,function(x){!all(x==0)})
+    X[[locus]] <- X[[locus]][t,]
+  }
+  return(X)
+}

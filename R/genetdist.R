@@ -1,7 +1,7 @@
 ###########################################
 #'@export
 ###########################################
-genet.dist<-function(path='.',diploid=TRUE,method="Dch", loci=NULL, exclude='ALL'){
+genet.dist<-function(path='.',pft=NULL,diploid=TRUE,method="Dch", loci=NULL, exclude='ALL'){
   cl<-match.call()
   if(!is.na(pmatch(method,"Dch")))
     method<-"Dch"
@@ -13,8 +13,9 @@ genet.dist<-function(path='.',diploid=TRUE,method="Dch", loci=NULL, exclude='ALL
   if (method==9) {gdist<-pairwise.neifst(dat,diploid); return(stats::as.dist(gdist))}
   if (method==10) {gdist<-pairwise.WCfst(dat,diploid);return(stats::as.dist(gdist))}
   
-  
-  pft<-get.freq(path=path, loci=loci, exclude=exclude)
+  if(is.null(pft)){
+    pft<-get.freq(path=path, loci=loci, exclude=exclude)
+  }
   nl<-length(pft)
   npop<-dim(pft[[1]])[2]
   dist.loc<-array(numeric(npop^2*nl),c(npop,npop,nl))

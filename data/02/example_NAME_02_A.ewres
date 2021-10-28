@@ -1,0 +1,12 @@
+Original sample homozigoty: 0.161875
+Bootstrapped homozigoty CI: (0.1325, 0.255)
+Ewens PH for bootstrapped samples
+	MT alpha corrected extreme counts: lower: 0 higher: 0 zeros: 0 ones: 0
+		min p-value: 0.0182   max p-value: 0.9718
+Global summary -- BootSamples: 1000 IterSEWTest: 10000
+	 Zeros: 0 Ones: 0 MinPadj: 0.790986601705 MaxPadj: 0.997580645161
+Slatkin's PE for bootstrapped samples
+	MT alpha corrected extreme counts: lower: 0 higher: 0 zeros: 0 ones: 0
+		min p-value: 0.0085   max p-value: 0.9961
+Global summary -- BootSamples: 1000 IterSEWTest: 10000
+	 Zeros: 0 Ones: 0 MinPadj: 0.860399529965 MaxPadj: 0.999470899471
