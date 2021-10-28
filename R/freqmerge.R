@@ -1,7 +1,7 @@
 ###########################################
 #'@export
 ###########################################
-merge.freq <- function(X, Y){
+freq.merge <- function(X, Y){
   loci <- unique(c(names(X),names(Y)))
   popFreq <- list()
   for (locus in loci){
