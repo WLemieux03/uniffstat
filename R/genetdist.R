@@ -15,6 +15,13 @@ genet.dist<-function(path='.',pft=NULL,diploid=TRUE,method="Dch", loci=NULL, exc
   
   if(is.null(pft)){
     pft<-get.freq(path=path, loci=loci, exclude=exclude)
+  } else {
+    if(!is.null(exclude)){
+      for (n in names(pft)){
+        regions <- setdiff(colnames(pft[[n]]), exclude)
+        pft[[n]] <- pft[[n]][,regions]
+      }
+    }
   }
   nl<-length(pft)
   npop<-dim(pft[[1]])[2]

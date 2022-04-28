@@ -53,14 +53,19 @@ which.diff <- function(dfl, x, exclude=NULL){
   return(output)
 }
 
-sampleList <- list(A=c("A*01:01","A*02:01","A*03:01","A*11:01","A*23:01","A*23:17","A*24:01","A*24:02","A*25:01","A*26:01","A*31:08","A*32:01","A*66:01","A*66:08","A*68:01","A*68:11N"),
-                   B=c("B*07:02","B*07:61","B*08:01","B*13:02","B*15:01","B*18:01","B*18:17N","B*27:05","B*27:13","B*35:01","B*35:03","B*35:42","B*38:01","B*40:01","B*44:02","B*44:03","B*44:19N","B*50:01","B*51:01","B*57:01"),
-                   DRB1=c("DRB1*01:01","DRB1*03:01","DRB1*04:01","DRB1*07:01","DRB1*08:11","DRB1*09:01","DRB1*11:01","DRB1*11:04","DRB1*12:01","DRB1*12:06","DRB1*12:10","DRB1*12:17","DRB1*13:01","DRB1*13:02","DRB1*13:03","DRB1*14:01","DRB1*14:54","DRB1*15:01","DRB1*16:02"))
-
-clean.freq <- function(X){
-  for (locus in names(X)){
-    t <- apply(X[[locus]],1,function(x){!all(x==0)})
-    X[[locus]] <- X[[locus]][t,]
+list.merge <- function(X, Y, exclude=NULL){
+  popFreq <- list()
+  for (locus in union(names(X), names(Y))){
+    
+    locusDF <- cbind(data.frame(allele=rownames(X[[locus]])),X[[locus]][, setdiff(colnames(X[[locus]]), exclude)])
+    if (dim(locusDF)[2]<3){colnames(locusDF) <- c("allele", setdiff(colnames(X[[locus]]), exclude))}
+    partDF <- cbind(data.frame(allele=rownames(Y[[locus]])),Y[[locus]][, setdiff(colnames(Y[[locus]]), exclude)])
+    if (dim(partDF)[2]<3){colnames(partDF) <- c("allele", setdiff(colnames(Y[[locus]]), exclude))}
+    locusDF <- merge(locusDF, partDF, all=T)
+    
+    row.names(locusDF) <- locusDF$allele
+    locusDF[is.na(locusDF)]=0
+    popFreq[[locus]] <- as.matrix(locusDF[,-1])
   }
-  return(X)
+  return(popFreq)
 }

@@ -1,7 +1,7 @@
 ###########################################
 #'@export
 ###########################################
-get.freq <- function(path='.', loci=NULL, exclude = 'ALL', ...){
+het.calc <- function(path='.', loci=NULL, exclude = 'ALL', ...){
   #Some initial parameter setup and autodetection for the populations and loci
   pops <- setdiff(dir(path) , dir(path, pattern='\\.'))
   pops <- setdiff(pops, exclude)
@@ -15,36 +15,25 @@ get.freq <- function(path='.', loci=NULL, exclude = 'ALL', ...){
       }
     }
     loci <- sort(unique(loci))
+    loci <- loci[-grep('~', loci)]
   }
-  
   #
-  popFreq <- list()
-  for (locus in loci){
-    locusDF <- data.frame()
-    for (pop in pops){
-      filename <- paste(name, pop, paste0(locus, '.freq'),sep='_')
+  HE <- NULL
+  for (pop in pops){
+    poptemp <- c()
+    for (locus in loci){
+      filename <- paste(name, pop, paste0(locus, '.ewres'),sep='_')
       f <- file(file.path(path, pop, filename), open='r')
       temp <- readLines(f)
       close(f)
-      alleles <- c()
-      freq <- c()
-      for (t in temp[grep(paste0(locus, '\\*'), temp)]){
-        all_freq <- unlist(strsplit(t, '\t'))
-        alleles <- c(alleles, all_freq[1])
-        freq <- c(freq, as.numeric(all_freq[2]))
-      }
-      partDF <- data.frame(alleles,freq)
-      names(partDF) <- c('alleles', pop)
-      if('alleles' %in% names(locusDF)){
-        locusDF <- merge(locusDF, partDF, all=T)
-      } else {
-        locusDF <- partDF
-      }
+      HO <- as.numeric(unlist(strsplit(temp[grep('homozigoty', temp)], ': '))[2])
+      
+      poptemp <- c(poptemp, 1-HO)
     }
-    row.names(locusDF) <- locusDF$alleles
-    locusDF[is.na(locusDF)]=0
-    popFreq[[locus]] <- as.matrix(locusDF[,-1])
+   HE <- cbind(HE, poptemp)
   }
+  colnames(HE) <- pops
+  rownames(HE) <- loci
   closeAllConnections()
-  return(popFreq)
+  return(HE)
 }

@@ -1,6 +1,6 @@
 ###########################################
 #'@export
-###########################################<
+###########################################
 rfreq <- function(alleleList=sampleList, loci=names(alleleList), pops=c('01','02')){
   popFreq <- list()
   for (locus in loci){

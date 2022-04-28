@@ -1,6 +1,6 @@
 Package: uniffstat
-Version: 0.4.1
-Date: 2021-10-28
+Version: 0.5.0
+Date: 2022-04-28
 Title: Implementation for using Gene[Rate] output to compute Hierarchical F-Statistics based on hierfstat
 Authors@R: c(person("William","Lemieux",role=c("aut","cre"),email="william.lemieux@hema-quebec.qc.ca"),
             c(person("Antoine", "Lewin", role=c("ctb"))))
@@ -17,4 +17,4 @@ License: GPL (>= 2)
 URL: https://www.r-project.org, https://github.com/WLemieux03/uniffstat
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Date/Publication: 2021-10-28 16:16:00 UTC
+Date/Publication: 2022-04-28 10:44:00 EDT

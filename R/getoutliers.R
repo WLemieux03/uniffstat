@@ -9,6 +9,9 @@ get.outliers <- function(tmp, exclude=NULL){
   return(far)
 }
 
+###########################################
+#'@export
+###########################################
 unlist.outliers <- function(far){
   outl = c()
   for (n in names(far)){
@@ -17,6 +20,9 @@ unlist.outliers <- function(far){
   return(cbind(names(outl), outl))
 }
 
+###########################################
+#'@export
+###########################################
 count.outliers <- function(far){
   df <- data.frame()
   for (n in names(far)){

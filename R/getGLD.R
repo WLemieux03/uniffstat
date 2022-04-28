@@ -1,7 +1,7 @@
 ###########################################
 #'@export
 ###########################################
-get.hapl <- function(path='.', loci=NULL, exclude = 'ALL', ...){
+get.GLD <- function(path='.', loci=NULL, exclude = 'ALL', ...){
   #Some initial parameter setup and autodetection for the populations and loci
   pops <- setdiff(dir(path) , dir(path, pattern='\\.'))
   pops <- setdiff(pops, exclude)
@@ -20,34 +20,26 @@ get.hapl <- function(path='.', loci=NULL, exclude = 'ALL', ...){
   #
   popFreq <- list()
   for (locus in loci){
-    locusDF <- data.frame()
+    LRT <- c()
+    PRS <- c()
     for (pop in pops){
       filename <- paste(name, pop, paste0(locus, '.ga2l'),sep='_')
       f <- file(file.path(path, pop, filename), open='r')
       temp <- readLines(f)
       close(f)
-      alleles <- c()
-      freq <- c()
-      for (t in temp[(grep('haplo\tobs\texp\tdiff\tstdres', temp)+1):length(temp)]){
-        all_freq <- unlist(strsplit(t, '\t'))
-        alleles <- c(alleles, all_freq[1])
-        freq <- c(freq, as.numeric(all_freq[2]))
-      }
-      partDF <- data.frame(alleles,freq)
-      names(partDF) <- c('alleles', pop)
-      if('alleles' %in% names(locusDF)){
-        locusDF <- merge(locusDF, partDF, all=T)
-      } else {
-        locusDF <- partDF
-      }
+      LRT <- c(LRT, as.numeric(unlist(strsplit(temp[1], 'lnL ratio test statistic | p-value on |\\. df: '))[4]))
+      PRS <- c(PRS, as.numeric(unlist(strsplit(temp[2], '  \\(observed p-value is quantile | of | simulations\\)'))[2]))
     }
-    row.names(locusDF) <- locusDF$alleles
-    locusDF[is.na(locusDF)]=0
-    popFreq[[locus]] <- as.matrix(locusDF[,-1])
+    if(is.null(popFreq$LRT)){
+      popFreq$LRT <- data.frame(LRT, row.names=pops)
+      popFreq$PRS <- data.frame(PRS, row.names=pops)
+    } else {
+      popFreq$LRT <- cbind(popFreq$LRT, LRT)
+      popFreq$PRS <- cbind(popFreq$PRS, PRS)
+    }
   }
   closeAllConnections()
-  for (n in names(popFreq)){
-    popFreq[[n]] <- popFreq[[n]][!apply(popFreq[[n]], 1, function(x){all(x==0)}),]
-  }
+  colnames(popFreq$LRT) <- loci
+  colnames(popFreq$PRS) <- loci
   return(popFreq)
 }

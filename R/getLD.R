@@ -1,7 +1,7 @@
 ###########################################
 #'@export
 ###########################################
-get.hapl <- function(path='.', loci=NULL, exclude = 'ALL', ...){
+get.LD <- function(path='.', loci=NULL, exclude = 'ALL', ...){
   #Some initial parameter setup and autodetection for the populations and loci
   pops <- setdiff(dir(path) , dir(path, pattern='\\.'))
   pops <- setdiff(pops, exclude)
@@ -31,7 +31,7 @@ get.hapl <- function(path='.', loci=NULL, exclude = 'ALL', ...){
       for (t in temp[(grep('haplo\tobs\texp\tdiff\tstdres', temp)+1):length(temp)]){
         all_freq <- unlist(strsplit(t, '\t'))
         alleles <- c(alleles, all_freq[1])
-        freq <- c(freq, as.numeric(all_freq[2]))
+        freq <- c(freq, as.numeric(all_freq[5]))
       }
       partDF <- data.frame(alleles,freq)
       names(partDF) <- c('alleles', pop)
@@ -42,7 +42,6 @@ get.hapl <- function(path='.', loci=NULL, exclude = 'ALL', ...){
       }
     }
     row.names(locusDF) <- locusDF$alleles
-    locusDF[is.na(locusDF)]=0
     popFreq[[locus]] <- as.matrix(locusDF[,-1])
   }
   closeAllConnections()
